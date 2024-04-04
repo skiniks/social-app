@@ -1,11 +1,5 @@
 import React, {memo, useCallback} from 'react'
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native'
+import {StyleProp, View, ViewStyle} from 'react-native'
 import {
   AppBskyFeedDefs,
   AppBskyFeedPost,
@@ -17,7 +11,6 @@ import {useLingui} from '@lingui/react'
 
 import {HITSLOP_10, HITSLOP_20} from '#/lib/constants'
 import {Haptics} from '#/lib/haptics'
-import {CommentBottomArrow} from '#/lib/icons'
 import {makeProfileLink} from '#/lib/routes/links'
 import {shareUrl} from '#/lib/sharing'
 import {pluralize} from '#/lib/strings/helpers'
@@ -32,8 +25,11 @@ import {
 } from '#/state/queries/post'
 import {useRequireAuth} from '#/state/session'
 import {useComposerControls} from '#/state/shell/composer'
+import {atoms as a} from '#/alf'
+import {Button} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {ArrowOutOfBox_Stroke2_Corner0_Rounded as ArrowOutOfBox} from '#/components/icons/ArrowOutOfBox'
+import {Bubble_Stroke2_Corner3_Rounded as Bubble} from '#/components/icons/Bubble'
 import {
   Heart2_Filled_Stroke2_Corner0_Rounded as HeartIconFilled,
   Heart2_Stroke2_Corner0_Rounded as HeartIconOutline,
@@ -146,39 +142,38 @@ let PostCtrls = ({
   }, [post.uri, post.author])
 
   return (
-    <View style={[styles.ctrls, style]}>
+    <View style={[a.flex_row, a.justify_between, a.align_center, style]}>
       <View
         style={[
-          big ? styles.ctrlBig : styles.ctrl,
+          big ? a.align_center : [a.flex_1, a.align_start],
           post.viewer?.replyDisabled ? {opacity: 0.5} : undefined,
         ]}>
-        <TouchableOpacity
+        <Button
           testID="replyBtn"
-          style={[styles.btn, !big && styles.btnPad, {paddingLeft: 0}]}
+          style={{padding: 5, marginLeft: -5}}
           onPress={() => {
             if (!post.viewer?.replyDisabled) {
               requireAuth(() => onPressReply())
             }
           }}
-          accessibilityRole="button"
-          accessibilityLabel={`Reply (${post.replyCount} ${
+          label={`Reply (${post.replyCount} ${
             post.replyCount === 1 ? 'reply' : 'replies'
           })`}
-          accessibilityHint=""
-          hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
-          <CommentBottomArrow
-            style={[defaultCtrlColor, big ? s.mt2 : styles.mt1]}
-            strokeWidth={3}
-            size={big ? 20 : 15}
+          shape="round"
+          variant="ghost"
+          color="secondary">
+          <Bubble
+            style={[defaultCtrlColor, big ? s.mt2 : {marginTop: 1}]}
+            size="md"
           />
           {typeof post.replyCount !== 'undefined' && post.replyCount > 0 ? (
             <Text style={[defaultCtrlColor, s.ml5, s.f15]}>
               {post.replyCount}
             </Text>
           ) : undefined}
-        </TouchableOpacity>
+        </Button>
       </View>
-      <View style={big ? styles.ctrlBig : styles.ctrl}>
+      <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
         <RepostButton
           big={big}
           isReposted={!!post.viewer?.repost}
@@ -187,25 +182,23 @@ let PostCtrls = ({
           onQuote={onQuote}
         />
       </View>
-      <View style={big ? styles.ctrlBig : styles.ctrl}>
-        <TouchableOpacity
+      <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
+        <Button
           testID="likeBtn"
-          style={[styles.btn, !big && styles.btnPad]}
-          onPress={() => {
-            requireAuth(() => onPressToggleLike())
-          }}
-          accessibilityRole="button"
-          accessibilityLabel={`${
-            post.viewer?.like ? _(msg`Unlike`) : _(msg`Like`)
-          } (${post.likeCount} ${pluralize(post.likeCount || 0, 'like')})`}
-          accessibilityHint=""
-          hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
+          style={{padding: 5}}
+          onPress={() => requireAuth(() => onPressToggleLike())}
+          label={`${post.viewer?.like ? _(msg`Unlike`) : _(msg`Like`)} (${
+            post.likeCount
+          } ${pluralize(post.likeCount || 0, 'like')})`}
+          shape="round"
+          variant="ghost"
+          color="secondary">
           {post.viewer?.like ? (
-            <HeartIconFilled style={s.likeColor} size={big ? 'lg' : 'md'} />
+            <HeartIconFilled style={s.likeColor} size="md" />
           ) : (
             <HeartIconOutline
-              style={[defaultCtrlColor, big ? styles.mt1 : undefined]}
-              size={big ? 'lg' : 'md'}
+              style={[defaultCtrlColor, big ? {marginTop: 1} : undefined]}
+              size="md"
             />
           )}
           {typeof post.likeCount !== 'undefined' && post.likeCount > 0 ? (
@@ -219,14 +212,13 @@ let PostCtrls = ({
               {post.likeCount}
             </Text>
           ) : undefined}
-        </TouchableOpacity>
+        </Button>
       </View>
       {big && (
         <>
-          <View style={styles.ctrlBig}>
-            <TouchableOpacity
+          <View style={a.align_center}>
+            <Button
               testID="shareBtn"
-              style={[styles.btn]}
               onPress={() => {
                 if (shouldShowLoggedOutWarning) {
                   loggedOutWarningPromptControl.open()
@@ -234,15 +226,15 @@ let PostCtrls = ({
                   onShare()
                 }
               }}
-              accessibilityRole="button"
-              accessibilityLabel={`${_(msg`Share`)}`}
-              accessibilityHint=""
-              hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
+              label={_(msg`Share`)}
+              shape="round"
+              variant="ghost"
+              color="secondary">
               <ArrowOutOfBox
-                style={[defaultCtrlColor, styles.mt1]}
-                width={22}
+                style={[defaultCtrlColor, {marginTop: 1}]}
+                size="md"
               />
-            </TouchableOpacity>
+            </Button>
           </View>
           <Prompt.Basic
             control={loggedOutWarningPromptControl}
@@ -255,7 +247,7 @@ let PostCtrls = ({
           />
         </>
       )}
-      <View style={big ? styles.ctrlBig : styles.ctrl}>
+      <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
         <PostDropdownBtn
           testID="postDropdownBtn"
           postAuthor={post.author}
@@ -263,7 +255,7 @@ let PostCtrls = ({
           postUri={post.uri}
           record={record}
           richText={richText}
-          style={styles.btnPad}
+          style={{padding: 5}}
           hitSlop={big ? HITSLOP_20 : HITSLOP_10}
         />
       </View>
@@ -272,31 +264,3 @@ let PostCtrls = ({
 }
 PostCtrls = memo(PostCtrls)
 export {PostCtrls}
-
-const styles = StyleSheet.create({
-  ctrls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  ctrl: {
-    flex: 1,
-    alignItems: 'flex-start',
-  },
-  ctrlBig: {
-    alignItems: 'center',
-  },
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  btnPad: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 5,
-    paddingRight: 5,
-  },
-  mt1: {
-    marginTop: 1,
-  },
-})
