@@ -180,7 +180,9 @@ let PostCtrls = ({
           hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
           <Bubble style={defaultCtrlColor} size={big ? 'lg' : 'md'} />
           {typeof post.replyCount !== 'undefined' && post.replyCount > 0 ? (
-            <Text style={[defaultCtrlColor, a.text_md]}>{post.replyCount}</Text>
+            <Text style={[defaultCtrlColor, big ? a.text_md : {fontSize: 15}]}>
+              {post.replyCount}
+            </Text>
           ) : undefined}
         </Pressable>
       </View>
@@ -216,7 +218,7 @@ let PostCtrls = ({
               testID="likeCount"
               style={[
                 [
-                  a.text_md,
+                  big ? a.text_md : {fontSize: 15},
                   post.viewer?.like
                     ? [a.font_bold, s.likeColor]
                     : defaultCtrlColor,
