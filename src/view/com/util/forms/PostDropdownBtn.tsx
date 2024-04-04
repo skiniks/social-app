@@ -1,5 +1,10 @@
 import React, {memo} from 'react'
-import {Pressable, PressableProps, StyleProp, ViewStyle} from 'react-native'
+import {
+  Pressable,
+  type PressableProps,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native'
 import {
   AppBskyActorDefs,
   AppBskyFeedPost,
@@ -55,6 +60,7 @@ let PostDropdownBtn = ({
   richText,
   style,
   hitSlop,
+  size,
 }: {
   testID: string
   postAuthor: AppBskyActorDefs.ProfileViewBasic
@@ -64,6 +70,7 @@ let PostDropdownBtn = ({
   richText: RichTextAPI
   style?: StyleProp<ViewStyle>
   hitSlop?: PressableProps['hitSlop']
+  size?: 'lg' | 'md' | 'sm'
 }): React.ReactNode => {
   const {hasSession, currentAccount} = useSession()
   const theme = useTheme()
@@ -197,6 +204,7 @@ let PostDropdownBtn = ({
                 <DotsHorizontal
                   fill={defaultCtrlColor}
                   style={{pointerEvents: 'none'}}
+                  size={size}
                 />
               </Pressable>
             )

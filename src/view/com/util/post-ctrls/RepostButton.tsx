@@ -8,8 +8,8 @@ import {pluralize} from 'lib/strings/helpers'
 import {atoms as a, useTheme} from '#/alf'
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import * as Dialog from '#/components/Dialog'
-import {OpenQuote_Filled_Stroke2_Corner0_Rounded as Quote} from '#/components/icons/Quote'
-import {Repost_Stroke2_Corner3_Rounded as Repost} from '#/components/icons/Repost'
+import {CloseQuote_Stroke2_Corner1_Rounded as Quote} from '#/components/icons/Quote'
+import {Repost_Stroke2_Corner2_Rounded as Repost} from '#/components/icons/Repost'
 import {Text} from '#/components/Typography'
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
   repostCount?: number
   onRepost: () => void
   onQuote: () => void
+  size?: 'lg' | 'md' | 'sm'
 }
 
 let RepostButton = ({
@@ -24,6 +25,7 @@ let RepostButton = ({
   repostCount,
   onRepost,
   onQuote,
+  size,
 }: Props): React.ReactNode => {
   const t = useTheme()
   const {_} = useLingui()
@@ -53,7 +55,7 @@ let RepostButton = ({
         shape="round"
         variant="ghost"
         color="secondary">
-        <Repost style={color} />
+        <Repost style={color} size={size} />
         {typeof repostCount !== 'undefined' && repostCount > 0 ? (
           <Text
             testID="repostCount"

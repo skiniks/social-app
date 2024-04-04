@@ -1,5 +1,11 @@
 import React, {memo, useCallback} from 'react'
-import {StyleProp, View, ViewStyle} from 'react-native'
+import {
+  Pressable,
+  type PressableStateCallbackType,
+  type StyleProp,
+  View,
+  type ViewStyle,
+} from 'react-native'
 import {
   AppBskyFeedDefs,
   AppBskyFeedPost,
@@ -16,7 +22,6 @@ import {shareUrl} from '#/lib/sharing'
 import {pluralize} from '#/lib/strings/helpers'
 import {toShareUrl} from '#/lib/strings/url-helpers'
 import {s} from '#/lib/styles'
-import {useTheme} from '#/lib/ThemeContext'
 import {Shadow} from '#/state/cache/types'
 import {useModalControls} from '#/state/modals'
 import {
@@ -25,11 +30,10 @@ import {
 } from '#/state/queries/post'
 import {useRequireAuth} from '#/state/session'
 import {useComposerControls} from '#/state/shell/composer'
-import {atoms as a} from '#/alf'
-import {Button} from '#/components/Button'
+import {atoms as a, useTheme} from '#/alf'
 import {useDialogControl} from '#/components/Dialog'
 import {ArrowOutOfBox_Stroke2_Corner0_Rounded as ArrowOutOfBox} from '#/components/icons/ArrowOutOfBox'
-import {Bubble_Stroke2_Corner3_Rounded as Bubble} from '#/components/icons/Bubble'
+import {Bubble_Stroke2_Corner2_Rounded as Bubble} from '#/components/icons/Bubble'
 import {
   Heart2_Filled_Stroke2_Corner0_Rounded as HeartIconFilled,
   Heart2_Stroke2_Corner0_Rounded as HeartIconOutline,
@@ -56,7 +60,7 @@ let PostCtrls = ({
   onPressReply: () => void
   logContext: 'FeedItem' | 'PostThreadItem' | 'Post'
 }): React.ReactNode => {
-  const theme = useTheme()
+  const t = useTheme()
   const {_} = useLingui()
   const {openComposer} = useComposerControls()
   const {closeModal} = useModalControls()
@@ -76,9 +80,9 @@ let PostCtrls = ({
 
   const defaultCtrlColor = React.useMemo(
     () => ({
-      color: theme.palette.default.postCtrl,
+      color: t.palette.contrast_500,
     }),
-    [theme],
+    [t],
   ) as StyleProp<ViewStyle>
 
   const onPressToggleLike = React.useCallback(async () => {
@@ -141,37 +145,44 @@ let PostCtrls = ({
     shareUrl(url)
   }, [post.uri, post.author])
 
+  const btnStyle = React.useCallback(
+    ({pressed, hovered}: PressableStateCallbackType) => [
+      a.gap_xs,
+      a.rounded_full,
+      a.flex_row,
+      a.align_center,
+      a.justify_center,
+      {padding: 5},
+      (pressed || hovered) && t.atoms.bg_contrast_50,
+    ],
+    [t.atoms.bg_contrast_50],
+  )
+
   return (
     <View style={[a.flex_row, a.justify_between, a.align_center, style]}>
       <View
         style={[
-          big ? a.align_center : [a.flex_1, a.align_start],
+          big ? a.align_center : [a.flex_1, a.align_start, {marginLeft: -5}],
           post.viewer?.replyDisabled ? {opacity: 0.5} : undefined,
         ]}>
-        <Button
+        <Pressable
           testID="replyBtn"
-          style={{padding: 5, marginLeft: -5}}
+          style={btnStyle}
           onPress={() => {
             if (!post.viewer?.replyDisabled) {
               requireAuth(() => onPressReply())
             }
           }}
-          label={`Reply (${post.replyCount} ${
+          accessibilityLabel={`Reply (${post.replyCount} ${
             post.replyCount === 1 ? 'reply' : 'replies'
           })`}
-          shape="round"
-          variant="ghost"
-          color="secondary">
-          <Bubble
-            style={[defaultCtrlColor, big ? s.mt2 : {marginTop: 1}]}
-            size="md"
-          />
+          accessibilityHint=""
+          hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
+          <Bubble style={defaultCtrlColor} size={big ? 'lg' : 'md'} />
           {typeof post.replyCount !== 'undefined' && post.replyCount > 0 ? (
-            <Text style={[defaultCtrlColor, s.ml5, s.f15]}>
-              {post.replyCount}
-            </Text>
+            <Text style={[defaultCtrlColor, a.text_md]}>{post.replyCount}</Text>
           ) : undefined}
-        </Button>
+        </Pressable>
       </View>
       <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
         <RepostButton
@@ -179,46 +190,49 @@ let PostCtrls = ({
           repostCount={post.repostCount}
           onRepost={onRepost}
           onQuote={onQuote}
+          size={big ? 'lg' : 'md'}
         />
       </View>
       <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
-        <Button
+        <Pressable
           testID="likeBtn"
-          style={{padding: 5}}
+          style={btnStyle}
           onPress={() => requireAuth(() => onPressToggleLike())}
-          label={`${post.viewer?.like ? _(msg`Unlike`) : _(msg`Like`)} (${
-            post.likeCount
-          } ${pluralize(post.likeCount || 0, 'like')})`}
-          shape="round"
-          variant="ghost"
-          color="secondary">
+          accessibilityLabel={`${
+            post.viewer?.like ? _(msg`Unlike`) : _(msg`Like`)
+          } (${post.likeCount} ${pluralize(post.likeCount || 0, 'like')})`}
+          accessibilityHint=""
+          hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
           {post.viewer?.like ? (
-            <HeartIconFilled style={s.likeColor} size="md" />
+            <HeartIconFilled style={s.likeColor} size={big ? 'lg' : 'md'} />
           ) : (
             <HeartIconOutline
-              style={[defaultCtrlColor, big ? {marginTop: 1} : undefined]}
-              size="md"
+              style={defaultCtrlColor}
+              size={big ? 'lg' : 'md'}
             />
           )}
           {typeof post.likeCount !== 'undefined' && post.likeCount > 0 ? (
             <Text
               testID="likeCount"
-              style={
-                post.viewer?.like
-                  ? [s.bold, s.likeColor, s.f15, s.ml5]
-                  : [defaultCtrlColor, s.f15, s.ml5]
-              }>
+              style={[
+                [
+                  a.text_md,
+                  post.viewer?.like
+                    ? [a.font_bold, s.likeColor]
+                    : defaultCtrlColor,
+                ],
+              ]}>
               {post.likeCount}
             </Text>
           ) : undefined}
-        </Button>
+        </Pressable>
       </View>
       {big && (
         <>
           <View style={a.align_center}>
-            <Button
+            <Pressable
               testID="shareBtn"
-              style={{padding: 5}}
+              style={btnStyle}
               onPress={() => {
                 if (shouldShowLoggedOutWarning) {
                   loggedOutWarningPromptControl.open()
@@ -226,15 +240,11 @@ let PostCtrls = ({
                   onShare()
                 }
               }}
-              label={_(msg`Share`)}
-              shape="round"
-              variant="ghost"
-              color="secondary">
-              <ArrowOutOfBox
-                style={[defaultCtrlColor, {marginTop: 1}]}
-                size="md"
-              />
-            </Button>
+              accessibilityLabel={_(msg`Share`)}
+              accessibilityHint=""
+              hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
+              <ArrowOutOfBox style={defaultCtrlColor} size="lg" />
+            </Pressable>
           </View>
           <Prompt.Basic
             control={loggedOutWarningPromptControl}
@@ -257,6 +267,7 @@ let PostCtrls = ({
           richText={richText}
           style={{padding: 5}}
           hitSlop={big ? HITSLOP_20 : HITSLOP_10}
+          size={big ? 'lg' : 'md'}
         />
       </View>
     </View>
