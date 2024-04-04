@@ -1,15 +1,16 @@
 import React, {memo, useCallback} from 'react'
 import {StyleProp, StyleSheet, TouchableOpacity, ViewStyle} from 'react-native'
-import {RepostIcon} from 'lib/icons'
-import {s, colors} from 'lib/styles'
-import {useTheme} from 'lib/ThemeContext'
-import {Text} from '../text/Text'
-import {pluralize} from 'lib/strings/helpers'
-import {HITSLOP_10, HITSLOP_20} from 'lib/constants'
-import {useModalControls} from '#/state/modals'
-import {useRequireAuth} from '#/state/session'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
+
+import {useModalControls} from '#/state/modals'
+import {useRequireAuth} from '#/state/session'
+import {HITSLOP_10, HITSLOP_20} from 'lib/constants'
+import {RepostIcon} from 'lib/icons'
+import {pluralize} from 'lib/strings/helpers'
+import {colors, s} from 'lib/styles'
+import {useTheme} from 'lib/ThemeContext'
+import {Text} from '../text/Text'
 
 interface Props {
   isReposted: boolean
