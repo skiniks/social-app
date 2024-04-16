@@ -18678,6 +18678,11 @@ react-native-ios-context-menu@^1.15.3:
   dependencies:
     "@dominicstop/ts-event-emitter" "^1.1.0"
 
+react-native-keyboard-controller@^1.11.6:
+  version "1.11.6"
+  resolved "https://registry.yarnpkg.com/react-native-keyboard-controller/-/react-native-keyboard-controller-1.11.6.tgz#4c9f2950f872a42745f32f46c21475cd1e4a7154"
+  integrity sha512-EFx17Uqccsf8jRqEJxqgTIwOdwSKLhA53qQ5Y6z9rvTO0q99/wQbq6F1otEE/oq27HlVGkYk1aYJ7U2nKrtqKw==
+
 react-native-pager-view@6.2.3:
   version "6.2.3"
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.2.3.tgz#698f6387fdf06cecc3d8d4792604419cb89cb775"
