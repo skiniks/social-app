@@ -8,7 +8,8 @@ class ExpoBlueskyOAuthClientModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("ExpoBlueskyOAuthClient")
 
-    AsyncFunction("digest") { value: ByteArray ->
+    AsyncFunction("digest") { value: ByteArray, algorithmName: String ->
+      if(algorithmName != "sha256") throw Exception("Unsupported algorithm")
       return@AsyncFunction CryptoUtil().digest(value)
     }
 
@@ -16,14 +17,14 @@ class ExpoBlueskyOAuthClientModule : Module() {
       return@Function CryptoUtil().getRandomValues(byteLength)
     }
 
-    AsyncFunction("generateJwk") { algorithim: String ->
+    AsyncFunction("generateJwk") { algorithim: String? ->
       if (algorithim != "ES256") {
         throw Exception("Unsupported algorithm")
       }
       return@AsyncFunction CryptoUtil().generateKeyPair()
     }
 
-    AsyncFunction("createJwt") { header: JWTHeader, payload: JWTPayload, jwk: JWK ->
+    AsyncFunction("createJwt") { header: String, payload: String, jwk: String ->
       return@AsyncFunction JWTUtil().createJwt(header, payload, jwk)
     }
 
