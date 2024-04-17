@@ -1,7 +1,7 @@
 import {isWeb} from 'platform/detection'
 
 export const OAUTH_CLIENT_ID = 'http://localhost/'
-export const OAUTH_REDIRECT_URI = 'http://127.0.0.1:2583/'
+export const OAUTH_REDIRECT_URI = 'app.bsky://oauth-login'
 export const OAUTH_SCOPE = 'openid profile'
 export const OAUTH_GRANT_TYPES = [
   'authorization_code',
