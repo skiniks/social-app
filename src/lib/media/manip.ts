@@ -1,13 +1,15 @@
-import RNFetchBlob from 'rn-fetch-blob'
-import ImageResizer from '@bam.tech/react-native-image-resizer'
 import {Image as RNImage, Share as RNShare} from 'react-native'
-import {Image} from 'react-native-image-crop-picker'
 import * as RNFS from 'react-native-fs'
+import {Image} from 'react-native-image-crop-picker'
 import uuid from 'react-native-uuid'
-import * as Sharing from 'expo-sharing'
+import {deleteAsync} from 'expo-file-system'
 import * as MediaLibrary from 'expo-media-library'
-import {Dimensions} from './types'
+import * as Sharing from 'expo-sharing'
+import ImageResizer from '@bam.tech/react-native-image-resizer'
+import RNFetchBlob from 'rn-fetch-blob'
+
 import {isAndroid, isIOS} from 'platform/detection'
+import {Dimensions} from './types'
 
 export async function compressIfNeeded(
   img: Image,
@@ -70,6 +72,7 @@ export async function downloadAndResize(opts: DownloadAndResizeOpts) {
 
     return await doResize(localUri, opts)
   } finally {
+    // TODO Whenever we remove `rn-fetch-blob`, we will need to replace this `flush()` with a `deleteAsync()` -hailey
     if (downloadRes) {
       downloadRes.flush()
     }
@@ -122,6 +125,8 @@ export async function saveImageToMediaLibrary({uri}: {uri: string}) {
 
   // save
   await MediaLibrary.createAssetAsync(imagePath)
+
+  // TODO we should add a `deleteAsync()` here as well -hailey
 }
 
 export function getImageDim(path: string): Promise<Dimensions> {
@@ -168,6 +173,12 @@ async function doResize(localUri: string, opts: DoResizeOpts): Promise<Image> {
         width: resizeRes.width,
         height: resizeRes.height,
       }
+    } else {
+      try {
+        deleteAsync(resizeRes.path)
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
   throw new Error(
@@ -187,7 +198,13 @@ async function moveToPermanentPath(path: string, ext = ''): Promise<string> {
     RNFS.TemporaryDirectoryPath,
     `${filename}${ext}`,
   )
-  await RNFS.moveFile(path, destinationPath)
+
+  try {
+    await RNFS.moveFile(path, destinationPath)
+  } catch (e) {
+    console.error('Failed to move file', e)
+    await RNFS.copyFile(path, destinationPath)
+  }
   return normalizePath(destinationPath)
 }
 
