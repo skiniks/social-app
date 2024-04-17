@@ -50,7 +50,7 @@ module.exports = function (config) {
       version: VERSION,
       name: 'Bluesky',
       slug: 'bluesky',
-      scheme: 'bluesky',
+      scheme: ['bluesky', 'app.bsky'],
       owner: 'blueskysocial',
       runtimeVersion: {
         policy: 'appVersion',
