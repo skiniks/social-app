@@ -26,6 +26,10 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerViewProps> {
     await this.nativeRef.current.pauseAsync()
   }
 
+  async toggleAsync(): Promise<void> {
+    await this.nativeRef.current.toggleAsync()
+  }
+
   render() {
     return <NativeVideoPlayer {...this.props} ref={this.nativeRef} />
   }

@@ -2,7 +2,8 @@ import ExpoModulesCore
 
 public class ExpoBlueskyVideoPlayerView: ExpoView, AVPlayerViewControllerDelegate {
   public var source: String? = nil
-  public var isPlaying: Bool = true
+  public var isPlaying = true
+  public var autoplay = true
   
   private var controller: PlayerController? = nil
   
@@ -25,12 +26,11 @@ public class ExpoBlueskyVideoPlayerView: ExpoView, AVPlayerViewControllerDelegat
         return
       }
       
-      if let controller = PlayerControllerManager.shared.getPlayer() {
-        controller.setFrame(rect: bounds)
-        controller.initForView(source, view: self)
-        self.addSubview(controller.view)
-        self.controller = controller
-      }
+      let controller = PlayerControllerManager.shared.getPlayer()
+      controller.setFrame(rect: bounds)
+      controller.initForView(source, view: self)
+      self.addSubview(controller.view)
+      self.controller = controller
     } else {
       self.controller?.release()
     }
@@ -44,5 +44,13 @@ public class ExpoBlueskyVideoPlayerView: ExpoView, AVPlayerViewControllerDelegat
   func pause() {
     self.isPlaying = false
     self.controller?.pause()
+  }
+  
+  func toggle() {
+    if self.isPlaying {
+      self.pause()
+    } else {
+      self.play()
+    }
   }
 }

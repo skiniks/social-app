@@ -4,12 +4,8 @@ public class ExpoBlueskyVideoPlayerModule: Module {
   public func definition() -> ModuleDefinition {
     Name("ExpoBlueskyVideoPlayer")
     
-    AsyncFunction("setShouldAutoplayAsync") { (value: Bool) in
-      
-    }
-    
     AsyncFunction("prefetchAsync") { (source: String) in
-      PlayerItemManager.shared.getOrAddItem(source: source)
+      PlayerItemManager.shared.saveToCache(source: source)
     }
 
     View(ExpoBlueskyVideoPlayerView.self) {
@@ -19,8 +15,16 @@ public class ExpoBlueskyVideoPlayerModule: Module {
         view.source = prop
       }
       
+      Prop("autoplay") { (view: ExpoBlueskyVideoPlayerView, prop: Bool) in
+        view.autoplay = prop
+      }
+      
       AsyncFunction("getIsPlayingAsync") { (view: ExpoBlueskyVideoPlayerView, promise: Promise) in
         promise.resolve(view.isPlaying)
+      }
+      
+      AsyncFunction("toggleAsync") { (view: ExpoBlueskyVideoPlayerView) in
+        view.toggle()
       }
       
       AsyncFunction("playAsync") { (view: ExpoBlueskyVideoPlayerView) in
