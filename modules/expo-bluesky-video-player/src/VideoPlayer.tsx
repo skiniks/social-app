@@ -14,8 +14,8 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerViewProps> {
     this.nativeRef = createRef()
   }
 
-  static async setShouldAutoplayAsync(shouldAutoplay: boolean): Promise<void> {
-    await VideoModule.setShouldAutoplayAsync(shouldAutoplay)
+  static async prefetchAsync(source: string): Promise<void> {
+    await VideoModule.prefetchAsync(source)
   }
 
   async playAsync(): Promise<void> {
