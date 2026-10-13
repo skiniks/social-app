@@ -57,6 +57,19 @@ The OG card build downloads Noto Sans Arabic, Hebrew, HK, JP, KR, SC, TC, and Th
 Copyright (c) 2020 @catamphetamine <purecatamphetamine@gmail.com>
 ```
 
+## Markdown parser dependencies
+
+**Packages:** `mdast-util-from-markdown`, `mdast-util-to-string`, `character-entities`, `decode-named-character-reference`, `micromark`, `micromark-core-commonmark`, `micromark-factory-destination`, `micromark-factory-label`, `micromark-factory-space`, `micromark-factory-title`, `micromark-factory-whitespace`, `micromark-util-chunked`, `micromark-util-classify-character`, `micromark-util-combine-extensions`, `micromark-util-decode-numeric-character-reference`, `micromark-util-decode-string`, `micromark-util-edit-map`, `micromark-util-html-tag-name`, `micromark-util-normalize-identifier`, `micromark-util-resolve-all`, `micromark-util-subtokenize`, and `micromark-util-types`
+**License:** MIT — full text at [`licenses/MIT-MARKDOWN.txt`](./licenses/MIT-MARKDOWN.txt)
+**Projects:** [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown), [mdast-util-to-string](https://github.com/syntax-tree/mdast-util-to-string), [character-entities](https://github.com/wooorm/character-entities), [decode-named-character-reference](https://github.com/wooorm/decode-named-character-reference), and [micromark](https://github.com/micromark/micromark)
+
+```
+Copyright (c) Titus Wormer <tituswormer@gmail.com>
+Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
+```
+
+*The 2015 notice applies to `character-entities` and `mdast-util-to-string`; the other listed packages carry the undated notice.*
+
 ---
 
 For the licensing position of assets that are **not** covered by our MIT license — commissioned artwork, the licensed icon system, Bluesky trademarks, third-party marks, and the product imagery in `assets/images/` — see [`ASSETS.md`](./ASSETS.md), which names known rights holders and identifies the product imagery whose provenance is still being documented.
